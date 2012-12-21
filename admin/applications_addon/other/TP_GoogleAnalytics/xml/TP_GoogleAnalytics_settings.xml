@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settingexport>
+  <settinggroup>
+    <setting>
+      <conf_is_title>1</conf_is_title>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_title_title>Google Analytics</conf_title_title>
+      <conf_title_desc>These settings are used for the Google Analytics enhancement application.</conf_title_desc>
+      <conf_title_tab>System</conf_title_tab>
+      <conf_title_app>TP_GoogleAnalytics</conf_title_app>
+      <conf_title_noshow>0</conf_title_noshow>
+    </setting>
+    <setting>
+      <conf_title>Account ID</conf_title>
+      <conf_description><![CDATA[This is your account ID, in a UA-XXXXXXX-XX format. You can find this within your Google Analytics overview.<br /><br />This pushes the value into <strong>_setAccount</strong>]]></conf_description>
+      <conf_type>input</conf_type>
+      <conf_key>tpga_account</conf_key>
+      <conf_default/>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>0</conf_protected>
+      <conf_position>1</conf_position>
+      <conf_start_group>General Settings</conf_start_group>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords>Google Analytics</conf_keywords>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_title>Tracker Prefix</conf_title>
+      <conf_description><![CDATA[If you are running multiple Google Analytics tags on your forums, you'll need to use a prefix on at least one of the tags. You can see an example of this on <a href="https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApi_gaq#_gaq.push">Google's docs</a>. In the example they provided, "t2" would be the prefix. <br /><br />
+<strong>This is usually not required.</strong>]]></conf_description>
+      <conf_type>input</conf_type>
+      <conf_key>tpga_prefix</conf_key>
+      <conf_default/>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>2</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords>Google Analytics</conf_keywords>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_title>Set Domain Name</conf_title>
+      <conf_description><![CDATA[Sets the domain name for the <a href="https://developers.google.com/analytics/resources/concepts/gaConceptsCookies">GATC cookies</a>. There are three modes to this method: ("auto" | "none" | [domain]). By default, the method is set to auto, which attempts to resolve the domain name based on the document.domain property in the DOM.<br /><br />
+This is important for Cross Domain Tracking and pushes the value into <strong>_setDomainName</strong>]]></conf_description>
+      <conf_type>input</conf_type>
+      <conf_key>tpga_domain</conf_key>
+      <conf_default/>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>3</conf_position>
+      <conf_start_group>Global: Technical Configuration</conf_start_group>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords>Google Analytics</conf_keywords>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_title>Cookie Path</conf_title>
+      <conf_description><![CDATA[Sets the new cookie path for your site. By default, Google Analytics sets the cookie path to the root level (/). In most situations, this is the appropriate option and works correctly with the tracking code you install on your website, blog, or corporate web directory. However, in a few cases where user access is restricted to only a sub-directory of a domain, this method can resolve tracking issues by setting a sub-directory as the default path for all tracking.<br /><br />
+This pushes the value into <strong>_setCookiePath</strong>]]></conf_description>
+      <conf_type>input</conf_type>
+      <conf_key>tpga_cookiePath</conf_key>
+      <conf_default/>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>4</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords>Google Analytics</conf_keywords>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_title>Allow Linker</conf_title>
+      <conf_description>Sets the linker functionality flag as part of enabling cross-domain user tracking. By default, this method is set to false and linking is disabled.</conf_description>
+      <conf_type>yes_no</conf_type>
+      <conf_key>tpga_linker</conf_key>
+      <conf_default>0</conf_default>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>5</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords>Google Analytics</conf_keywords>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_title>Content URL Parameter</conf_title>
+      <conf_description><![CDATA[Sets the campaign ad content key. The campaign content key is used to retrieve the ad content (description) of your advertising campaign from your campaign URLs. Use this function on the landing page defined in your campaign.<br /><br />
+This pushes the value into <strong>_setCampContentKey</strong>]]></conf_description>
+      <conf_type>input</conf_type>
+      <conf_key>tpga_campContent</conf_key>
+      <conf_default/>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>6</conf_position>
+      <conf_start_group>Global: Campaign Configuration</conf_start_group>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords>Google Analytics</conf_keywords>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_title>Medium URL Parameter</conf_title>
+      <conf_description><![CDATA[Sets the campaign medium key, which is used to retrieve the medium from your campaign URLs. The medium appears as a segment option in the Campaigns report. <br /><br />
+This pushes the value into <strong>_setCampMediumKey</strong>]]></conf_description>
+      <conf_type>input</conf_type>
+      <conf_key>tpga_campMedium</conf_key>
+      <conf_default/>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>7</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords>Google Analytics</conf_keywords>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_title>Name URL Parameter</conf_title>
+      <conf_description><![CDATA[Sets the campaign name key. The campaign name key is used to retrieve the name of your advertising campaign from your campaign URLs. You would use this function on any page that you want to track click-campaigns on.<br /><br />
+This pushes the value into <strong>_setCampNameKey</strong>]]></conf_description>
+      <conf_type>input</conf_type>
+      <conf_key>tpga_campName</conf_key>
+      <conf_default/>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>8</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords>Google Analytics</conf_keywords>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_title>Source URL Parameter</conf_title>
+      <conf_description><![CDATA[Sets the campaign source key, which is used to retrieve the campaign source from the URL. "Source" appears as a segment option in the Campaigns report. <br /><br />
+This pushes the value into <strong>_setCampSourceKey</strong>]]></conf_description>
+      <conf_type>input</conf_type>
+      <conf_key>tpga_campSource</conf_key>
+      <conf_default/>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>9</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords>Google Analytics</conf_keywords>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_title>Term URL Parameter</conf_title>
+      <conf_description><![CDATA[Sets the campaign term key, which is used to retrieve the campaign keywords from the URL. <br /><br />
+This pushes the value into <strong>_setCampTermKey</strong>]]></conf_description>
+      <conf_type>input</conf_type>
+      <conf_key>tgpa_campTerm</conf_key>
+      <conf_default/>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>10</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords>Google Analytics</conf_keywords>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
+      <conf_title>Allow Anchor</conf_title>
+      <conf_description><![CDATA[This method sets the # sign as the query string delimiter in campaign tracking. This option is set to false by default.<br /><br />
+
+Conventional campaign tracking URLs use the question mark (?) to indicate the beginning of key/value pairs that make up the query. If you set this option to true, your campaign tracking URLs can use a pound (#) sign instead of the question mark (?) to indicate the beginning of the query string.]]></conf_description>
+      <conf_type>yes_no</conf_type>
+      <conf_key>tpga_anchor</conf_key>
+      <conf_default>0</conf_default>
+      <conf_extra/>
+      <conf_evalphp/>
+      <conf_protected>1</conf_protected>
+      <conf_position>11</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords>Google Analytics</conf_keywords>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+  </settinggroup>
+</settingexport>

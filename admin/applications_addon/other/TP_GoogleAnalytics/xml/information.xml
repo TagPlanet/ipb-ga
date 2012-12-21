@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<information>
+  <data>
+    <name>(TP) Google Analytics</name>
+    <public_name/>
+    <hide_tab>1</hide_tab>
+    <author>Philip Lawrence</author>
+    <description>Overall enhancements to Google Analytics</description>
+    <disabledatinstall>0</disabledatinstall>
+    <global_caches/>
+    <website>http://tagpla.net</website>
+    <update_check/>
+    <templategroups/>
+  </data>
+</information>
