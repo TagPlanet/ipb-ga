@@ -110,6 +110,7 @@ class TP_GoogleAnalytics_core
      */
     public function __construct( ipsRegistry $registry )
     {
+        // @TODO: Delete any unused shortcuts
 		$this->registry   =  $registry;
 		$this->DB         =  $this->registry->DB();
 		$this->settings   =& $this->registry->fetchSettings();
@@ -184,7 +185,7 @@ class TP_GoogleAnalytics_core
         if( $this->_account == false )
         {
             $account = false;
-            if( preg_match( '~^(UA|MO)-\d{4,10}-\d{1,3}$~i' , $accountID ) )
+            if( preg_match( '~^(?:UA|MO)-\d{4,10}-\d{1,3}$~i' , $accountID ) )
             {
                 $account = strtoupper( $accountID );
             }
@@ -299,7 +300,7 @@ class TP_GoogleAnalytics_core
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/{$url}';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
-// Google Analytics Extension provided by TagPla.net
+// Google Analytics IPB Extension provided by TagPla.net
 // Copyright 2012, TagPla.net & Philip Lawrence
 </script>
 EOJS;
