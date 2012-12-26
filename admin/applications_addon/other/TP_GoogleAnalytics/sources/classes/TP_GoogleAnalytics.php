@@ -134,11 +134,16 @@ class TP_GoogleAnalytics_core
         // Verify we have a working account ID
         $account = $this->_parseAccountID( $this->settings[self::P . 'account'] );
         if( ! $account )
+        {
+            $this->_debug('The account ID (' . IPSText::cleanPermString( $this->settings[self::P . 'account'] ) . ') does not match the correct format');
             return false;
+        }
         
         // Prefix?
         if( $this->settings[self::P . 'prefix'] )
+        {
             $this->_prefix = $this->settings[self::P . 'prefix'];
+        }
         
         $this->_setAccount( $account );
         
@@ -168,13 +173,25 @@ class TP_GoogleAnalytics_core
                 $this->$callback( $this->settings[$option] );
             }
         }
-            
         
-        // Raise the flag
+        // Return all clear!
         $this->_init = true;
         return true;
     }   
 
+    protected function _checkPermissions( )
+    {
+        // Verify this user is allowed to ping GA
+        if( IPSMember::isInGroup( $this->memberData, explode( ',' , IPSText::cleanPermString( $this->settings[self::P . 'excludeGroups'] ) ), true ) )
+        {
+            $this->_debug('This user is in the excluded group, no GA code for you!');
+            return false;
+        }
+        
+        // All clear!
+        return true;
+    }
+    
     /**
      * Cleans up and verifies the Google Analytics account ID
      * @param string $accountID
@@ -241,8 +258,8 @@ class TP_GoogleAnalytics_core
      */
     public function render( )
     {
-        // Verify we are initialized
-        if( ! $this->_init() )
+        // Verify we are initialized & have permissions
+        if( ! $this->_init() || ! $this->_checkPermissions() )
             return '';
             
         // Check to see if we need to throw in the trackPageview call

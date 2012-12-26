@@ -44,6 +44,39 @@
       <conf_is_title>0</conf_is_title>
     </setting>
     <setting>
+      <conf_title>Exclude User Groups</conf_title>
+      <conf_description><![CDATA[Which user groups should <em>not</em> have Google Analytics tracking enabled? It is common to have the  administrators group selected.]]></conf_description>
+      <conf_type>multi</conf_type>
+      <conf_key>tpga_excludeGroups</conf_key>
+      <conf_default/>
+      <conf_extra>#show_groups#</conf_extra>
+      <conf_evalphp><![CDATA[if ( $save == 1)
+{
+	if ( is_array($_POST['tpga_excludeGroups']) )
+	{
+		$_POST['tpga_excludeGroups'] = ',' . implode(",",$_POST['tpga_excludeGroups']) . ',';
+	}
+	else
+	{
+		$_POST['tpga_excludeGroups'] = '';
+	}
+
+	$key = 'tpga_excludeGroups';
+}
+
+if ( $show == 1 )
+{
+	$key = 'tpga_excludeGroups[]';
+}]]></conf_evalphp>
+      <conf_protected>1</conf_protected>
+      <conf_position>3</conf_position>
+      <conf_start_group/>
+      <conf_add_cache>1</conf_add_cache>
+      <conf_keywords>Google Analytics</conf_keywords>
+      <conf_title_keyword>TP_GoogleAnalytics</conf_title_keyword>
+      <conf_is_title>0</conf_is_title>
+    </setting>
+    <setting>
       <conf_title>Set Domain Name</conf_title>
       <conf_description><![CDATA[Sets the domain name for the <a href="https://developers.google.com/analytics/resources/concepts/gaConceptsCookies">GATC cookies</a>. There are three modes to this method: ("auto" | "none" | [domain]). By default, the method is set to auto, which attempts to resolve the domain name based on the document.domain property in the DOM.<br /><br />
 This is important for Cross Domain Tracking and pushes the value into <strong>_setDomainName</strong>]]></conf_description>
@@ -53,7 +86,7 @@ This is important for Cross Domain Tracking and pushes the value into <strong>_s
       <conf_extra/>
       <conf_evalphp/>
       <conf_protected>1</conf_protected>
-      <conf_position>3</conf_position>
+      <conf_position>4</conf_position>
       <conf_start_group>Global: Technical Configuration</conf_start_group>
       <conf_add_cache>1</conf_add_cache>
       <conf_keywords>Google Analytics</conf_keywords>
@@ -70,7 +103,7 @@ This pushes the value into <strong>_setCookiePath</strong>]]></conf_description>
       <conf_extra/>
       <conf_evalphp/>
       <conf_protected>1</conf_protected>
-      <conf_position>4</conf_position>
+      <conf_position>5</conf_position>
       <conf_start_group/>
       <conf_add_cache>1</conf_add_cache>
       <conf_keywords>Google Analytics</conf_keywords>
@@ -86,7 +119,7 @@ This pushes the value into <strong>_setCookiePath</strong>]]></conf_description>
       <conf_extra/>
       <conf_evalphp/>
       <conf_protected>1</conf_protected>
-      <conf_position>5</conf_position>
+      <conf_position>6</conf_position>
       <conf_start_group/>
       <conf_add_cache>1</conf_add_cache>
       <conf_keywords>Google Analytics</conf_keywords>
@@ -103,7 +136,7 @@ This pushes the value into <strong>_setCampContentKey</strong>]]></conf_descript
       <conf_extra/>
       <conf_evalphp/>
       <conf_protected>1</conf_protected>
-      <conf_position>6</conf_position>
+      <conf_position>7</conf_position>
       <conf_start_group>Global: Campaign Configuration</conf_start_group>
       <conf_add_cache>1</conf_add_cache>
       <conf_keywords>Google Analytics</conf_keywords>
@@ -120,7 +153,7 @@ This pushes the value into <strong>_setCampMediumKey</strong>]]></conf_descripti
       <conf_extra/>
       <conf_evalphp/>
       <conf_protected>1</conf_protected>
-      <conf_position>7</conf_position>
+      <conf_position>8</conf_position>
       <conf_start_group/>
       <conf_add_cache>1</conf_add_cache>
       <conf_keywords>Google Analytics</conf_keywords>
@@ -137,7 +170,7 @@ This pushes the value into <strong>_setCampNameKey</strong>]]></conf_description
       <conf_extra/>
       <conf_evalphp/>
       <conf_protected>1</conf_protected>
-      <conf_position>8</conf_position>
+      <conf_position>9</conf_position>
       <conf_start_group/>
       <conf_add_cache>1</conf_add_cache>
       <conf_keywords>Google Analytics</conf_keywords>
@@ -154,7 +187,7 @@ This pushes the value into <strong>_setCampSourceKey</strong>]]></conf_descripti
       <conf_extra/>
       <conf_evalphp/>
       <conf_protected>1</conf_protected>
-      <conf_position>9</conf_position>
+      <conf_position>10</conf_position>
       <conf_start_group/>
       <conf_add_cache>1</conf_add_cache>
       <conf_keywords>Google Analytics</conf_keywords>
@@ -171,7 +204,7 @@ This pushes the value into <strong>_setCampTermKey</strong>]]></conf_description
       <conf_extra/>
       <conf_evalphp/>
       <conf_protected>1</conf_protected>
-      <conf_position>10</conf_position>
+      <conf_position>11</conf_position>
       <conf_start_group/>
       <conf_add_cache>1</conf_add_cache>
       <conf_keywords>Google Analytics</conf_keywords>
@@ -189,7 +222,7 @@ Conventional campaign tracking URLs use the question mark (?) to indicate the be
       <conf_extra/>
       <conf_evalphp/>
       <conf_protected>1</conf_protected>
-      <conf_position>11</conf_position>
+      <conf_position>12</conf_position>
       <conf_start_group/>
       <conf_add_cache>1</conf_add_cache>
       <conf_keywords>Google Analytics</conf_keywords>
