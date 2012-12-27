@@ -42,54 +42,54 @@ class TP_GoogleAnalytics_core
     const P = 'tpga_';
     
     /**
-     * Available options, pulled (Dec 27, 2012) from
+     * Available options, updated Dec 27, 2012 from
      * https://developers.google.com/analytics/devguides/collection/gajs/methods/
      * @var array
      */
     protected $_availableMethods = array
     (
-        '_addIgnoredOrganic' => array('default' => '', 'priority' => 25, 'type' => 'string'),
-        '_addIgnoredRef' => array('default' => '', 'priority' => 25, 'type' => 'string'),
-        '_addItem' => array('priority' => 90, 'type' => 'array'),
-        '_addOrganic' => array('priority' => 25, 'type' => 'array'),
-        '_addTrans' => array('priority' => 91, 'type' => 'array'),
-        '_anonymizeIp' => array('priority' => 5, 'type' => 'null'),
-        '_clearIgnoredOrganic' => array('priority' => 20, 'type' => 'null'),
-        '_clearIgnoredRef' => array('priority' => 20, 'type' => 'null'),
-        '_clearOrganic' => array('priority' => 20, 'type' => 'null'),
-        '_cookiePathCopy' => array('default' => '', 'priority' => 20, 'type' => 'string'),
-        '_deleteCustomVar' => array('priority' => 50, 'type' => 'int'),
-        '_setAccount' => array('priority' => 1, 'type' => 'string'),
-        '_setAllowAnchor' => array('default' => false, 'priority' => 30, 'type' => 'bool'),
-        '_setAllowLinker' => array('default' => false, 'priority' => 30, 'type' => 'bool'),
-        '_setCampContentKey' => array('default' => '', 'priority' => 30, 'type' => 'string'),
-        '_setCampMediumKey' => array('default' => '', 'priority' => 30, 'type' => 'string'),
-        '_setCampNOKey' => array('default' => '', 'priority' => 30, 'type' => 'string'),
-        '_setCampNameKey' => array('default' => '', 'priority' => 30, 'type' => 'string'),
-        '_setCampSourceKey' => array('default' => '', 'priority' => 30, 'type' => 'string'),
-        '_setCampTermKey' => array('default' => '', 'priority' => 30, 'type' => 'string'),
-        '_setCampaignCookieTimeout' => array('priority' => 30, 'type' => 'int'),
-        '_setCampaignTrack' => array('default' => true, 'priority' => 30, 'type' => 'bool'),
-        '_setClientInfo' => array('default' => true, 'priority' => 30, 'type' => 'bool'),
-        '_setCookiePath' => array('default' => '/', 'priority' => 30, 'type' => 'string'),
-        '_setCustomVar' => array('priority' => 40, 'type' => 'array'),
-        '_setDetectFlash' => array('default' => true, 'priority' => 30, 'type' => 'bool'),
-        '_setDetectTitle' => array('default' => true, 'priority' => 30, 'type' => 'bool'),
-        '_setDomainName' => array('default' => '', 'priority' => 30, 'type' => 'string'),
-        '_setLocalGifPath' => array('default' => '', 'priority' => 30, 'type' => 'string'),
-        '_setLocalRemoteServerMode' => array('default' => '', 'priority' => 30, 'type' => 'null'),
-        '_setLocalServerMode' => array('default' => '', 'priority' => 30, 'type' => 'null'),
-        '_setReferrerOverride' => array('default' => '', 'priority' => 30, 'type' => 'string'),
-        '_setRemoteServerMode' => array('default' => '', 'priority' => 30, 'type' => 'null'),
-        '_setSampleRate' => array('default' => '', 'priority' => 30, 'type' => 'int'),
-        '_setSessionCookieTimeout' => array('default' => '', 'priority' => 30, 'type' => 'int'),
-        '_setSiteSpeedSampleRate' => array('default' => '', 'priority' => 30, 'type' => 'int'),
-        '_setVisitorCookieTimeout' => array('default' => '', 'priority' => 30, 'type' => 'int'),
-        '_trackEvent' => array('priority' => 95, 'type' => 'array'),
-        '_trackPageview' => array('default' => '', 'priority' => 80, 'type' => 'string'),
-        '_trackSocial' => array('priority' => 95, 'type' => 'array'),
-        '_trackTiming' => array('priority' => 99, 'type' => 'array'),
-        '_trackTrans' => array('default' => '', 'priority' => 92, 'type' => 'null'),
+        '_addIgnoredOrganic' => array('default' => '', 'priority' => 25, 'type' => array( 'string' ) ),
+        '_addIgnoredRef' => array('default' => '', 'priority' => 25, 'type' => array( 'string' ) ),
+        '_addItem' => array('priority' => 90, 'type' => array( 'string', 'string', 'string', 'string', 'string', 'string' ) ),
+        '_addOrganic' => array('priority' => 25, 'type' => array( 'string', 'string', 'bool') ),
+        '_addTrans' => array('priority' => 91, 'type' => array( 'string', 'string', 'string', 'string', 'string', 'string', 'string', 'string' ) ),
+        '_anonymizeIp' => array( 'priority' => 5, 'type' => array( 'null' ) ),
+        '_clearIgnoredOrganic' => array( 'priority' => 20, 'type' => array( 'null' ) ),
+        '_clearIgnoredRef' => array( 'priority' => 20, 'type' => array( 'null' ) ),
+        '_clearOrganic' => array( 'priority' => 20, 'type' => array( 'null' ) ),
+        '_cookiePathCopy' => array( 'default' => '', 'priority' => 20, 'type' => array( 'string' ) ),
+        '_deleteCustomVar' => array( 'priority' => 50, 'type' => array( 'int' ) ),
+        '_setAccount' => array( 'priority' => 1, 'type' => array( 'string' ) ),
+        '_setAllowAnchor' => array( 'default' => false, 'priority' => 30, 'type' => array( 'bool' ) ),
+        '_setAllowLinker' => array( 'default' => false, 'priority' => 30, 'type' => array( 'bool' ) ),
+        '_setCampContentKey' => array( 'default' => '', 'priority' => 30, 'type' => array( 'string' ) ),
+        '_setCampMediumKey' => array( 'default' => '', 'priority' => 30, 'type' => array( 'string' ) ),
+        '_setCampNOKey' => array( 'default' => '', 'priority' => 30, 'type' => array( 'string' ) ),
+        '_setCampNameKey' => array( 'default' => '', 'priority' => 30, 'type' => array( 'string' ) ),
+        '_setCampSourceKey' => array( 'default' => '', 'priority' => 30, 'type' => array( 'string' ) ),
+        '_setCampTermKey' => array( 'default' => '', 'priority' => 30, 'type' => array( 'string' ) ),
+        '_setCampaignCookieTimeout' => array( 'priority' => 30, 'type' => array( 'int' ) ),
+        '_setCampaignTrack' => array( 'default' => true, 'priority' => 30, 'type' => array( 'bool' ) ),
+        '_setClientInfo' => array( 'default' => true, 'priority' => 30, 'type' => array( 'bool' ) ),
+        '_setCookiePath' => array( 'default' => '/', 'priority' => 30, 'type' => array( 'string' ) ),
+        '_setCustomVar' => array( 'priority' => 40, 'type' => array( 'int', 'string', 'string', 'int' ) ),
+        '_setDetectFlash' => array( 'default' => true, 'priority' => 30, 'type' => array( 'bool' ) ),
+        '_setDetectTitle' => array( 'default' => true, 'priority' => 30, 'type' => array( 'bool' ) ),
+        '_setDomainName' => array( 'default' => '', 'priority' => 30, 'type' => array( 'string' ) ),
+        '_setLocalGifPath' => array( 'default' => '', 'priority' => 30, 'type' => array( 'string' ) ),
+        '_setLocalRemoteServerMode' => array( 'default' => '', 'priority' => 30, 'type' => array( 'null' ) ),
+        '_setLocalServerMode' => array( 'default' => '', 'priority' => 30, 'type' => array( 'null' ) ),
+        '_setReferrerOverride' => array( 'default' => '', 'priority' => 30, 'type' => array( 'string' ) ),
+        '_setRemoteServerMode' => array( 'default' => '', 'priority' => 30, 'type' => array( 'null' ) ),
+        '_setSampleRate' => array( 'default' => '', 'priority' => 30, 'type' => array( 'int' ) ),
+        '_setSessionCookieTimeout' => array( 'default' => '', 'priority' => 30, 'type' => array( 'int' ) ),
+        '_setSiteSpeedSampleRate' => array( 'default' => '', 'priority' => 30, 'type' => array( 'int' ) ),
+        '_setVisitorCookieTimeout' => array( 'default' => '', 'priority' => 30, 'type' => array( 'int' ) ),
+        '_trackEvent' => array( 'priority' => 95, 'type' => array( 'string', 'string', 'string', 'int', 'bool' ) ),
+        '_trackPageview' => array( 'default' => '', 'priority' => 80, 'type' => array( 'string' ) ),
+        '_trackSocial' => array( 'priority' => 95, 'type' => array( 'string', 'string', 'string', 'string' ) ),
+        '_trackTiming' => array( 'priority' => 99, 'type' => array( 'string', 'string', 'int', 'string', 'int' ) ),
+        '_trackTrans' => array( 'default' => '', 'priority' => 92, 'type' => array( 'null' ) ),
     );
     
     /**
@@ -133,6 +133,9 @@ class TP_GoogleAnalytics_core
         
         // Initialize this bad boy
         $this->_init();
+        
+        $this->_trackEvent('foo cat', 'foo action', 'foo < value', 36);
+        $this->_setDomainName('foobar.com');
     }
     
     protected function _init( )
@@ -240,36 +243,17 @@ class TP_GoogleAnalytics_core
         // Check to see if this is an allowed method
         if( isset( $this->_availableMethods[$name] ) )
         {
-            // This method exists, let's check the values to see if we need to clean them up a bit.
-            switch( $this->_availableMethods[$name]['type'] )
+            // Clean all of the variables according to the type array
+            foreach( $arguments as $key => $argument )
             {
-                case 'array':
-                    // @TODO: clean up the data
-                break;
-                
-                case 'bool':
-                    $arguments = (bool) $arguments;
-                break;
-                
-                case 'int':
-                    $arguments = (int) $arguments;
-                break;
-                
-                case 'string':
-                default:
-                    $arguments = IPSText::htmlspecialchars( $arguments );
-                break;
+                $arguments[$key] = $this->_cleanVar( $argument, $this->_availableMethods[$name]['type'][$key] );
             }
-            
+                
             // Check to see if we need to pass the arguments or not
-            if( $this->_availableMethods[$name]['type'] != ' array' && isset( $this->_availableMethods[$name]['default'] ) && $this->_availableMethods[$name]['default'] == $arguments )
+            if( isset( $this->_availableMethods[$name]['default'] ) && count( $arguments ) == 1 && $this->_availableMethods[$name]['default'] == $arguments[0] )
             {
                 // No arguments needed to be passed 
                 $arguments = array();
-            }
-            else if( ! is_array( $arguments ) )
-            {
-                $arguments = array( $arguments );
             }
             
             // Clean up the debugging a bit
@@ -409,6 +393,41 @@ EOJS;
         $this->_rendered = true;
         
         return $js;
+    }
+    
+    /**
+     * _cleanVar
+     * Cleans up the variables passed to us for methods
+     * @param mixed $var
+     * @param string $type
+     * @return mixed
+     * @protected
+     */
+    protected function _cleanVar($var, $type)
+    {
+        // What type of variable are we?
+        switch( $type )
+        {            
+            case 'bool':
+                $var = (bool) $var;
+            break;
+            
+            case 'int':
+                $var = (int) $var;
+            break;
+            
+            case 'null':
+                $var = null;
+            break;
+            
+            case 'string':
+            default:
+                // This could be overpowering & not needed... a simple addslashes might do the trick in the end.
+                $var = IPSText::htmlspecialchars( $var );
+            break;
+        }
+        // Return the better looking variable
+        return $var;
     }
     
     /**
