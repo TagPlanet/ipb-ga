@@ -46,7 +46,7 @@ class TP_GoogleAnalytics_core
      * https://developers.google.com/analytics/devguides/collection/gajs/methods/
      * @var array
      */
-    protected $_availableOptions = array
+    protected $_availableMethods = array
     (
         '_addIgnoredOrganic' => array('default' => '', 'priority' => 25, 'type' => 'string'),
         '_addIgnoredRef' => array('default' => '', 'priority' => 25, 'type' => 'string'),
@@ -231,19 +231,63 @@ class TP_GoogleAnalytics_core
      */
     public function __call( $name , $arguments )
     {
+        // Verify we have the correct naming schema (_[method])
         if( $name[0] != '_' )
-            $name = '_' . $name;
-        if( in_array( $name , $this->_availableOptions ) )
         {
+            $name = '_' . $name;
+        }
+        
+        // Check to see if this is an allowed method
+        if( isset( $this->_availableMethods[$name] ) )
+        {
+            // This method exists, let's check the values to see if we need to clean them up a bit.
+            switch( $this->_availableMethods[$name]['type'] )
+            {
+                case 'array':
+                    // @TODO: clean up the data
+                break;
+                
+                case 'bool':
+                    $arguments = (bool) $arguments;
+                break;
+                
+                case 'int':
+                    $arguments = (int) $arguments;
+                break;
+                
+                case 'string':
+                default:
+                    $arguments = IPSText::htmlspecialchars( $arguments );
+                break;
+            }
+            
+            // Check to see if we need to pass the arguments or not
+            if( $this->_availableMethods[$name]['type'] != ' array' && isset( $this->_availableMethods[$name]['default'] ) && $this->_availableMethods[$name]['default'] == $arguments )
+            {
+                // No arguments needed to be passed 
+                $arguments = array();
+            }
+            else if( ! is_array( $arguments ) )
+            {
+                $arguments = array( $arguments );
+            }
+            
             // Clean up the debugging a bit
-            if( is_array( $arguments ) )
+            if( is_array( $arguments ) && count( $arguments ) )
+            {
                 $this->_debug( 'Setting method "' . $name . '" with arguments: "' . implode( '", "' , $arguments ) . '"' );
+            }
             else
-                $this->_debug( 'Setting method "' . $name . '" with argument: "' . $arguments .'"' );
+            {
+                $this->_debug( 'Setting method "' . $name . '" with no arguments' );
+            }
+            
+            // Call the push function
             $this->_push( $name , $arguments );
             return true;
         }
         
+        // No method? Shucks.
         $this->_debug( 'Method "' . $name . '" does not exist and cannot be called' , 'warning' );
         return false;
     }
@@ -264,15 +308,18 @@ class TP_GoogleAnalytics_core
 
     /**
      * Push data into the array
-     * @param string $variable
+     * @param string $method
      * @param array  $arguments
      * @protected
      */
-    protected function _push( $variable , $arguments )
+    protected function _push( $method , $arguments )
     {
-        $data = array_merge( array( $variable ) , $arguments );
-        array_push( $this->_data, $data );
-        $this->_calledOptions[] = $variable;
+        // Merge in the data method / arguements
+        $data = array_merge( array( $method ) , $arguments );
+        
+        // Push this into the data array to render, based off of the priority
+        $this->_data[ $this->_availableMethods[$method]['priority'] ][ ] = $data;
+        $this->_calledOptions[ ] = $method;
     }
 
 
@@ -308,28 +355,40 @@ class TP_GoogleAnalytics_core
         // Start the JS string
         $js = '<script type="text/javascript">' . PHP_EOL;
         $js.= 'var _gaq = _gaq || [];' . PHP_EOL;
-        foreach( $this->_data as $data )
+        
+        // Sort the data array
+        ksort($this->_data, SORT_NUMERIC);
+        
+        // Loop through the data, ordered by priority now
+        foreach( $this->_data as $priority => $set )
         {
-            // No prefixes for the first argument.
-            $prefixed = false;
-            
-            // Clean up each item
-            foreach( $data as $key => $item )
+            foreach( $set as $data )
             {
+                // No prefixes for the first argument.
+                $prefixed = false;
                 
-                if( is_string( $item ) )
+                // Clean up each item
+                foreach( $data as $method => $item )
                 {
-                    $data[$key] = self::Q . ( ( ! $prefixed ) ? $this->_prefix : '' ) . preg_replace( '~(?<!\\\)' . self::Q . '~' , '\\' . ( ( $prefixed ) ? $this->_prefix : '' ) . self::Q , $item ) . self::Q;
-                }
-                else if( is_bool( $item ) )
-                {
-                    $data[$key] = ( $item ) ? 'true' : 'false';
+                    if( is_string( $item ) )
+                    {
+                        $data[$method] = self::Q . ( ( ! $prefixed ) ? $this->_prefix : '' ) . $item  . self::Q;
+                    }
+                    else if( is_bool( $item ) )
+                    {
+                        $data[$method] = ( $item ) ? 'true' : 'false';
+                    }
+                    else
+                    {
+                        // nada
+                    }
+                    
+                    $prefixed = true;
                 }
                 
-                $prefixed = true;
+                // Push the final info into the JS variable
+                $js.= '_gaq.push([' . implode( ', ' , $data ) . ']);' . PHP_EOL;
             }
-
-            $js.= '_gaq.push([' . implode( ',' , $data ) . ']);' . PHP_EOL;
         }
         
         //Set the debug url?
