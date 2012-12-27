@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 /**
  *
@@ -23,6 +24,12 @@ class TP_GoogleAnalytics_core
      * @var bool
      */
     protected $_renderMobile = false;
+    
+    /**
+     * Rendered flag
+     * @var bool
+     */
+    protected $_rendered = false;
 
     /**
      * Type of quotes to use for values
@@ -35,55 +42,54 @@ class TP_GoogleAnalytics_core
     const P = 'tpga_';
     
     /**
-     * Available options, pulled (May 4, 2012) from
+     * Available options, pulled (Dec 27, 2012) from
      * https://developers.google.com/analytics/devguides/collection/gajs/methods/
      * @var array
      */
     protected $_availableOptions = array
     (
-        '_addIgnoredOrganic',
-        '_addIgnoredRef',
-        '_addItem',
-        '_addOrganic',
-        '_addTrans',
-        '_anonymizeIp',
-        '_clearIgnoredOrganic',
-        '_clearIgnoredRef',
-        '_clearOrganic',
-        '_cookiePathCopy',
-        '_createTracker',
-        '_deleteCustomVar',
-        '_setAccount',
-        '_setAllowAnchor',
-        '_setAllowLinker',
-        '_setCampContentKey',
-        '_setCampMediumKey',
-        '_setCampNOKey',
-        '_setCampNameKey',
-        '_setCampSourceKey',
-        '_setCampTermKey',
-        '_setCampaignCookieTimeout',
-        '_setCampaignTrack',
-        '_setClientInfo',
-        '_setCookiePath',
-        '_setCustomVar',
-        '_setDetectFlash',
-        '_setDetectTitle',
-        '_setDomainName',
-        '_setLocalGifPath',
-        '_setLocalRemoteServerMode',
-        '_setLocalServerMode',
-        '_setReferrerOverride',
-        '_setRemoteServerMode',
-        '_setSampleRate',
-        '_setSessionCookieTimeout',
-        '_setSiteSpeedSampleRate',
-        '_setVisitorCookieTimeout',
-        '_trackEvent',
-        '_trackPageview',
-        '_trackSocial',
-        '_trackTiming',
-        '_trackTrans',
+        '_addIgnoredOrganic' => array('default' => '', 'priority' => 25, 'type' => 'string'),
+        '_addIgnoredRef' => array('default' => '', 'priority' => 25, 'type' => 'string'),
+        '_addItem' => array('priority' => 90, 'type' => 'array'),
+        '_addOrganic' => array('priority' => 25, 'type' => 'array'),
+        '_addTrans' => array('priority' => 91, 'type' => 'array'),
+        '_anonymizeIp' => array('priority' => 5, 'type' => 'null'),
+        '_clearIgnoredOrganic' => array('priority' => 20, 'type' => 'null'),
+        '_clearIgnoredRef' => array('priority' => 20, 'type' => 'null'),
+        '_clearOrganic' => array('priority' => 20, 'type' => 'null'),
+        '_cookiePathCopy' => array('default' => '', 'priority' => 20, 'type' => 'string'),
+        '_deleteCustomVar' => array('priority' => 50, 'type' => 'int'),
+        '_setAccount' => array('priority' => 1, 'type' => 'string'),
+        '_setAllowAnchor' => array('default' => false, 'priority' => 30, 'type' => 'bool'),
+        '_setAllowLinker' => array('default' => false, 'priority' => 30, 'type' => 'bool'),
+        '_setCampContentKey' => array('default' => '', 'priority' => 30, 'type' => 'string'),
+        '_setCampMediumKey' => array('default' => '', 'priority' => 30, 'type' => 'string'),
+        '_setCampNOKey' => array('default' => '', 'priority' => 30, 'type' => 'string'),
+        '_setCampNameKey' => array('default' => '', 'priority' => 30, 'type' => 'string'),
+        '_setCampSourceKey' => array('default' => '', 'priority' => 30, 'type' => 'string'),
+        '_setCampTermKey' => array('default' => '', 'priority' => 30, 'type' => 'string'),
+        '_setCampaignCookieTimeout' => array('priority' => 30, 'type' => 'int'),
+        '_setCampaignTrack' => array('default' => true, 'priority' => 30, 'type' => 'bool'),
+        '_setClientInfo' => array('default' => true, 'priority' => 30, 'type' => 'bool'),
+        '_setCookiePath' => array('default' => '/', 'priority' => 30, 'type' => 'string'),
+        '_setCustomVar' => array('priority' => 40, 'type' => 'array'),
+        '_setDetectFlash' => array('default' => true, 'priority' => 30, 'type' => 'bool'),
+        '_setDetectTitle' => array('default' => true, 'priority' => 30, 'type' => 'bool'),
+        '_setDomainName' => array('default' => '', 'priority' => 30, 'type' => 'string'),
+        '_setLocalGifPath' => array('default' => '', 'priority' => 30, 'type' => 'string'),
+        '_setLocalRemoteServerMode' => array('default' => '', 'priority' => 30, 'type' => 'null'),
+        '_setLocalServerMode' => array('default' => '', 'priority' => 30, 'type' => 'null'),
+        '_setReferrerOverride' => array('default' => '', 'priority' => 30, 'type' => 'string'),
+        '_setRemoteServerMode' => array('default' => '', 'priority' => 30, 'type' => 'null'),
+        '_setSampleRate' => array('default' => '', 'priority' => 30, 'type' => 'int'),
+        '_setSessionCookieTimeout' => array('default' => '', 'priority' => 30, 'type' => 'int'),
+        '_setSiteSpeedSampleRate' => array('default' => '', 'priority' => 30, 'type' => 'int'),
+        '_setVisitorCookieTimeout' => array('default' => '', 'priority' => 30, 'type' => 'int'),
+        '_trackEvent' => array('priority' => 95, 'type' => 'array'),
+        '_trackPageview' => array('default' => '', 'priority' => 80, 'type' => 'string'),
+        '_trackSocial' => array('priority' => 95, 'type' => 'array'),
+        '_trackTiming' => array('priority' => 99, 'type' => 'array'),
+        '_trackTrans' => array('default' => '', 'priority' => 92, 'type' => 'null'),
     );
     
     /**
@@ -120,6 +126,10 @@ class TP_GoogleAnalytics_core
 		$this->memberData =& $this->registry->member()->fetchMemberData();
 		$this->cache      =  $this->registry->cache();
 		$this->caches     =& $this->registry->cache()->fetchCaches();
+        
+        // Check to see if we have space in the session for us already
+        if( ! isset( $_SESSION['tpga'] ) )
+            $_SESSION['tpga'] = array();
         
         // Initialize this bad boy
         $this->_init();
@@ -213,7 +223,7 @@ class TP_GoogleAnalytics_core
         }
         return $account;
     }
-
+    
     /**
      * Magic Method for options
      * @param string $name
@@ -237,6 +247,20 @@ class TP_GoogleAnalytics_core
         $this->_debug( 'Method "' . $name . '" does not exist and cannot be called' , 'warning' );
         return false;
     }
+    
+    /**
+     * Destuctor
+     * Checks to see if we need to defer loading or not
+     */
+    public function __destruct( )
+    {
+        // Did we render on this load?
+        if( ! $this->_rendered )
+        {
+            $_SESSION['tpga']['defer'] = 'foobar';
+            // Store stuff needing to be deferred here.
+        }
+    }
 
     /**
      * Push data into the array
@@ -259,7 +283,7 @@ class TP_GoogleAnalytics_core
     public function render( )
     {
         // Verify we are initialized & have permissions
-        if( ! $this->_init() || ! $this->_checkPermissions() )
+        if( ! $this->_init() || ! $this->_checkPermissions() || $this->rendered )
             return '';
             
         // Check to see if we need to throw in the trackPageview call
@@ -321,7 +345,10 @@ class TP_GoogleAnalytics_core
 // Copyright 2012, TagPla.net & Philip Lawrence
 </script>
 EOJS;
-
+        
+        // Show that we've rendered
+        $this->_rendered = true;
+        
         return $js;
     }
     
