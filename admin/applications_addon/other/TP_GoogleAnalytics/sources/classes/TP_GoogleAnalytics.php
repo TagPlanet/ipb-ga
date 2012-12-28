@@ -111,6 +111,12 @@ class TP_GoogleAnalytics_core
     protected $_init = false;
     
     /**
+     * Defer
+     * @var bool
+     */
+    public $defer = false;
+    
+    /**
      * 
      * 
      */
@@ -125,17 +131,14 @@ class TP_GoogleAnalytics_core
 		$this->member     =  $this->registry->member();
 		$this->memberData =& $this->registry->member()->fetchMemberData();
 		$this->cache      =  $this->registry->cache();
-		$this->caches     =& $this->registry->cache()->fetchCaches();
+		$this->caches     =& $this->registry->cache()->fetchCaches();        
         
-        // Check to see if we have space in the session for us already
+        // Check to see if we have space in the session for us already        
         if( ! isset( $_SESSION['tpga'] ) )
             $_SESSION['tpga'] = array();
-        
+                
         // Initialize this bad boy
-        $this->_init();
-        
-        $this->_trackEvent('foo cat', 'foo action', 'foo < value', 36);
-        $this->_setDomainName('foobar.com');
+        $this->_init = $this->_init();
     }
     
     protected function _init( )
@@ -148,17 +151,16 @@ class TP_GoogleAnalytics_core
         $account = $this->_parseAccountID( $this->settings[self::P . 'account'] );
         if( ! $account )
         {
-            $this->_debug('The account ID (' . IPSText::cleanPermString( $this->settings[self::P . 'account'] ) . ') does not match the correct format');
+            $this->_debug('The account ID (' . IPSText::alphanumericalClean( $this->settings[self::P . 'account'] ) . ') does not match the correct format');
             return false;
         }
+        $this->_setAccount( $account );
         
         // Prefix?
         if( $this->settings[self::P . 'prefix'] )
         {
             $this->_prefix = $this->settings[self::P . 'prefix'];
         }
-        
-        $this->_setAccount( $account );
         
         // These are all of the GA specific options we will allow to be set in the IPB admin interface
         $allowedOptions = array(
@@ -187,12 +189,84 @@ class TP_GoogleAnalytics_core
             }
         }
         
+        // Check to see if we have deferred
+        $deferred = $this->getDeferred();
+        
+        // If we do, let's loop through them
+        if( is_array( $deferred ) && count( $deferred) )
+        {
+            foreach($deferred as $priority => $deferredElements)
+            {
+                foreach($deferredElements as $element)
+                {
+                    // Finally, for each item, let's push it
+                    $this->_push( $element[0], array_slice( $element, 1 ) );
+                }
+            }
+            
+            // Remove all deferred items
+            $this->clearDeferred();
+        }
+        
         // Return all clear!
-        $this->_init = true;
         return true;
     }   
-
-    protected function _checkPermissions( )
+    
+    /**
+     * _hasDeferred
+     * Check's for any deferred elements
+     *
+     * @return bool
+     */
+    public function hasDeferred( )
+    {
+        return ( isset( $_SESSION['tpga']['defer'] ) && count( $_SESSION['tpga']['defer'] ) );
+    }
+     
+    /**
+     * _getDeferred
+     * Retrieves any deferred elements
+     *
+     * @return array
+     */
+    public function getDeferred( )
+    {
+        if( $this->hasDeferred() )
+        {
+            return $_SESSION['tpga']['defer'];
+        }
+        return array();
+    }
+    
+    /**
+     * _setDeferred
+     * Sets a deferred element
+     * 
+     * @param int $priority
+     * @param array $data
+     */
+    public function setDeferred( $priority, $data )
+    {
+        $_SESSION['tpga']['defer'][(int) $priority][] = $data;
+    }   
+     
+    /**
+     * _clearDeferred
+     * Clears any deferred elements
+     */
+    public function clearDeferred( )
+    {
+        $this->_debug('clearing deferred items');
+        $_SESSION['tpga']['defer'] = array();
+    }
+    
+    /**
+     * checkPermissions
+     * Checks to see if this user has permissions to see GA
+     *
+     * @return bool
+     */
+    public function checkPermissions( )
     {
         // Verify this user is allowed to ping GA
         if( IPSMember::isInGroup( $this->memberData, explode( ',' , IPSText::cleanPermString( $this->settings[self::P . 'excludeGroups'] ) ), true ) )
@@ -233,7 +307,7 @@ class TP_GoogleAnalytics_core
      * @param array  $arguments
      */
     public function __call( $name , $arguments )
-    {
+    {        
         // Verify we have the correct naming schema (_[method])
         if( $name[0] != '_' )
         {
@@ -275,20 +349,6 @@ class TP_GoogleAnalytics_core
         $this->_debug( 'Method "' . $name . '" does not exist and cannot be called' , 'warning' );
         return false;
     }
-    
-    /**
-     * Destuctor
-     * Checks to see if we need to defer loading or not
-     */
-    public function __destruct( )
-    {
-        // Did we render on this load?
-        if( ! $this->_rendered )
-        {
-            $_SESSION['tpga']['defer'] = 'foobar';
-            // Store stuff needing to be deferred here.
-        }
-    }
 
     /**
      * Push data into the array
@@ -301,9 +361,16 @@ class TP_GoogleAnalytics_core
         // Merge in the data method / arguements
         $data = array_merge( array( $method ) , $arguments );
         
-        // Push this into the data array to render, based off of the priority
-        $this->_data[ $this->_availableMethods[$method]['priority'] ][ ] = $data;
-        $this->_calledOptions[ ] = $method;
+        if( $this->defer )
+        {
+            $this->setDeferred( $this->_availableMethods[$method]['priority'], $data );
+        }
+        else
+        {
+            // Push this into the data array to render, based off of the priority
+            $this->_data[ $this->_availableMethods[$method]['priority'] ][ ] = $data;
+            $this->_calledOptions[ ] = $method;
+        }
     }
 
 
@@ -314,7 +381,7 @@ class TP_GoogleAnalytics_core
     public function render( )
     {
         // Verify we are initialized & have permissions
-        if( ! $this->_init() || ! $this->_checkPermissions() || $this->rendered )
+        if( ! $this->_init() || ! $this->checkPermissions() || $this->rendered )
             return '';
             
         // Check to see if we need to throw in the trackPageview call
@@ -391,6 +458,7 @@ EOJS;
         
         // Show that we've rendered
         $this->_rendered = true;
+        $this->_data = array( );
         
         return $js;
     }
