@@ -327,7 +327,7 @@ class TP_GoogleAnalytics_core
             if( isset( $this->_availableMethods[$name]['default'] ) && count( $arguments ) == 1 && $this->_availableMethods[$name]['default'] == $arguments[0] )
             {
                 // No arguments needed to be passed 
-                $arguments = array();
+                return true;
             }
             
             // Clean up the debugging a bit
