@@ -114,7 +114,7 @@ class TP_GoogleAnalytics_core
      * Debug mode
      * @var bool
      */
-    public $debug = false;
+    public static $debug = true;
     
     /**
      * 
@@ -147,15 +147,6 @@ class TP_GoogleAnalytics_core
         if( $this->_init )
             return true;
         
-        // Verify we have a working account ID
-        $account = $this->_parseAccountID( $this->settings[self::P . 'account'] );
-        if( ! $account )
-        {
-            $this->_debug('The account ID (' . IPSText::alphanumericalClean( $this->settings[self::P . 'account'] ) . ') does not match the correct format');
-            return false;
-        }
-        $this->_setAccount( $account );
-        
         // Prefix?
         if( $this->settings[self::P . 'prefix'] )
         {
@@ -164,28 +155,29 @@ class TP_GoogleAnalytics_core
         
         // These are all of the GA specific options we will allow to be set in the IPB admin interface
         $allowedOptions = array(
-            self::P . 'domain' => '_setDomainName',
-            self::P . 'anchor' => '_setAllowAnchor',
-            self::P . 'linker' => '_setAllowLinker',
-            self::P . 'campContent' => '_setCampContentKey',
-            self::P . 'campMedium' => '_setCampMediumKey',
-            self::P . 'campName' => '_setCampNameKey',
-            self::P . 'campSource' => '_setCampSourceKey',
-            self::P . 'campTerm' => '_setCampTermKey',
-            self::P . 'campaignTimeout' => '_setCampaignCookieTimeout',
-            self::P . 'sampleRate' => '_setSampleRate',
-            self::P . 'sessionTimeout' => '_setSessionCookieTimeout',
-            self::P . 'speedRate' => '_setSiteSpeedSampleRate',
-            self::P . 'visitorTimeout' => '_setVisitorCookieTimeout',
-            self::P . 'cookiePath' => '_setCookiePath',
+            '_setAccount',
+            '_setDomainName',
+            '_setAllowAnchor',
+            '_setAllowLinker',
+            '_setCampContentKey',
+            '_setCampMediumKey',
+            '_setCampNameKey',
+            '_setCampSourceKey',
+            '_setCampTermKey',
+            '_setCampaignCookieTimeout',
+            '_setSampleRate',
+            '_setSessionCookieTimeout',
+            '_setSiteSpeedSampleRate',
+            '_setVisitorCookieTimeout',
+            '_setCookiePath',
         );
                 
         // Loop through all the GA options we allow
-        foreach( $allowedOptions as $option => $callback )
+        foreach( $allowedOptions as $option )
         {
-            if( isset( $this->settings[$option] ) && $this->settings[$option] != '' )
+            if( isset( $this->settings['tpga' . $option] ) && $this->settings['tpga' . $option] != '' )
             {
-                $this->$callback( $this->settings[$option] );
+                $this->$option( $this->settings['tpga' . $option] );
             }
         }
         
@@ -213,7 +205,7 @@ class TP_GoogleAnalytics_core
     }   
     
     /**
-     * _hasDeferred
+     * hasDeferred
      * Check's for any deferred elements
      *
      * @return bool
@@ -224,7 +216,7 @@ class TP_GoogleAnalytics_core
     }
      
     /**
-     * _getDeferred
+     * getDeferred
      * Retrieves any deferred elements
      *
      * @return array
@@ -244,8 +236,9 @@ class TP_GoogleAnalytics_core
      * 
      * @param int $priority
      * @param array $data
+     * @private
      */
-    public function setDeferred( $priority, $data )
+    public function _setDeferred( $priority, $data )
     {
         $_SESSION['tpga']['defer'][(int) $priority][] = $data;
     }   
@@ -263,7 +256,7 @@ class TP_GoogleAnalytics_core
         {
             foreach( $dataSet as $data )
             {
-                $this->setDeferred( $priority, $data );
+                $this->_setDeferred( $priority, $data );
             }
         }
         $this->_data = array();
@@ -275,7 +268,7 @@ class TP_GoogleAnalytics_core
      */
     public function clearDeferred( )
     {
-        $this->_debug('clearing deferred items');
+        self::debug('clearing deferred items');
         $_SESSION['tpga']['defer'] = array();
     }
     
@@ -290,34 +283,12 @@ class TP_GoogleAnalytics_core
         // Verify this user is allowed to ping GA
         if( IPSMember::isInGroup( $this->memberData, explode( ',' , IPSText::cleanPermString( $this->settings[self::P . 'excludeGroups'] ) ), true ) )
         {
-            $this->_debug('This user is in the excluded group, no GA code for you!');
+            self::debug('This user is in the excluded group, no GA code for you!');
             return false;
         }
         
         // All clear!
         return true;
-    }
-    
-    /**
-     * Cleans up and verifies the Google Analytics account ID
-     * @param string $accountID
-     * @return string
-     */
-    protected function _parseAccountID( $accountID )
-    {
-        if( $this->_account == false )
-        {
-            $account = false;
-            if( preg_match( '~^(?:UA|MO)-\d{4,10}-\d{1,3}$~i' , $accountID ) )
-            {
-                $account = strtoupper( $accountID );
-            }
-            else
-            {
-                $this->_debug( 'Invalid Google Analytics account ID' , 'warning' );
-            }
-        }
-        return $account;
     }
     
     /**
@@ -352,11 +323,11 @@ class TP_GoogleAnalytics_core
             // Clean up the debugging a bit
             if( is_array( $arguments ) && count( $arguments ) )
             {
-                $this->_debug( 'Setting method "' . $name . '" with arguments: "' . implode( '", "' , $arguments ) . '"' );
+                self::debug( 'Setting method "' . $name . '" with arguments: "' . implode( '", "' , $arguments ) . '"' );
             }
             else
             {
-                $this->_debug( 'Setting method "' . $name . '" with no arguments' );
+                self::debug( 'Setting method "' . $name . '" with no arguments' );
             }
             
             // Call the push function
@@ -365,7 +336,7 @@ class TP_GoogleAnalytics_core
         }
         
         // No method? Shucks.
-        $this->_debug( 'Method "' . $name . '" does not exist and cannot be called' , 'warning' );
+        self::debug( 'Method "' . $name . '" does not exist and cannot be called' , 'warning' );
         return false;
     }
 
@@ -462,7 +433,7 @@ class TP_GoogleAnalytics_core
         }
         
         //Set the debug url?
-        $url = $this->debug ? 'u/ga_debug.js' : 'ga.js';
+        $url = self::$debug ? 'u/ga_debug.js' : 'ga.js';
             
         $js.= <<<EOJS
 (function() {
@@ -521,11 +492,10 @@ EOJS;
      * Output debugging, if enabled
      * @param string $message
      * @param string $level
-     * @protected
      */
-    protected function _debug( $message = '' , $level = 'info' )
+    protected static function debug( $message = '' , $level = 'info' )
     {
-        if( $this->debug )
+        if( self::$debug )
             IPSDebug::addMessage( 'GA ' . strtoupper( $level ) . ': ' . $message );
     }
     
