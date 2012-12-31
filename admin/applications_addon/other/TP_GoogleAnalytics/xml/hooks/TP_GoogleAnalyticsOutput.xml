@@ -54,7 +54,7 @@ class TP_GoogleAnalyticsOutput extends (~extends~)
         //   code. If we don't have anything, leave it alone and let the 
         //   default IP.SEO code in. This could be from a user not configuring
         //   the Google Analytics in the extended section.
-        $rendering = $this->registry->googleAnalytics->render();
+        $rendering = $this->registry->TP_GoogleAnalytics->render();
         if( $rendering != '' )
             $this->settings['ipseo_ga'] = $rendering;
         
