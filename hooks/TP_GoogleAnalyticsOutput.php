@@ -13,10 +13,10 @@ class TP_GoogleAnalyticsOutput extends output
     public function __construct( ipsRegistry $registry, $initialize = FALSE )
     {
         // Load our Google Analytics class, to use in templates
-        if ( ! ipsRegistry::isClassLoaded( 'googleAnalytics' ) )
+        if ( ! ipsRegistry::isClassLoaded( 'TP_GoogleAnalytics' ) )
         {
             $classToLoad = IPSLib::loadLibrary( IPSLib::getAppDir('TP_GoogleAnalytics') . '/sources/classes/TP_GoogleAnalytics.php' , 'TP_GoogleAnalytics_core' , 'core' );
-            $registry->setClass( 'googleAnalytics' , new $classToLoad( $registry ) );
+            $registry->setClass( 'TP_GoogleAnalytics' , new $classToLoad( $registry ) );
         }
         
         parent::__construct( $registry, $initialize );
@@ -31,10 +31,20 @@ class TP_GoogleAnalyticsOutput extends output
         //   code. If we don't have anything, leave it alone and let the 
         //   default IP.SEO code in. This could be from a user not configuring
         //   the Google Analytics in the extended section.
-        $rendering = $this->registry->googleAnalytics->render();
+        $rendering = $this->registry->TP_GoogleAnalytics->render();
         if( $rendering != '' )
             $this->settings['ipseo_ga'] = $rendering;
         
         return parent::sendOutput( $return );
     }
+    
+    /**
+     * {@inherit}
+     */
+	public function silentRedirect( $url, $seoTitle='', $send301=FALSE, $seoTemplate='' )
+	{
+        // Push anything left over to the next page load
+        $this->registry->TP_GoogleAnalytics->setAllDeferred();
+		return parent::silentRedirect( $url, $seoTitle, $send301, $seoTemplate );
+	}
 }
