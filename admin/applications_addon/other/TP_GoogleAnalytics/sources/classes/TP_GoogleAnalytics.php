@@ -18,18 +18,12 @@ class TP_GoogleAnalytics_core
      * @var string
      */
     protected $_prefix = '';
-
-    /**
-     * Should we render a URL string for mobile, or a JS block?
-     * @var bool
-     */
-    protected $_renderMobile = false;
     
     /**
      * Rendered flag
      * @var bool
      */
-    protected $_rendered = false;
+    public $rendered = false;
 
     /**
      * Type of quotes to use for values
@@ -115,6 +109,12 @@ class TP_GoogleAnalytics_core
      * @var bool
      */
     public $defer = false;
+    
+    /**
+     * Debug mode
+     * @var bool
+     */
+    public $debug = false;
     
     /**
      * 
@@ -249,6 +249,25 @@ class TP_GoogleAnalytics_core
     {
         $_SESSION['tpga']['defer'][(int) $priority][] = $data;
     }   
+    
+    /**
+     * setAllDeferred
+     * Defers all remaining elements
+     * 
+     * @param int $priority
+     * @param array $data
+     */
+    public function setAllDeferred( )
+    {
+        foreach( $this->_data as $priority => $dataSet )
+        {
+            foreach( $dataSet as $data )
+            {
+                $this->setDeferred( $priority, $data );
+            }
+        }
+        $this->_data = array();
+    }  
      
     /**
      * _clearDeferred
@@ -457,7 +476,7 @@ class TP_GoogleAnalytics_core
 EOJS;
         
         // Show that we've rendered
-        $this->_rendered = true;
+        $this->rendered = true;
         $this->_data = array( );
         
         return $js;
@@ -506,7 +525,8 @@ EOJS;
      */
     protected function _debug( $message = '' , $level = 'info' )
     {
-        IPSDebug::addMessage( 'GA ' . strtoupper( $level ) . ': ' . $message );
+        if( $this->debug )
+            IPSDebug::addMessage( 'GA ' . strtoupper( $level ) . ': ' . $message );
     }
     
     
