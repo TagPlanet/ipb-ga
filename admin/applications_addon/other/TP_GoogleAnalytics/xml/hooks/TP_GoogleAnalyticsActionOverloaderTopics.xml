@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hookexport>
+  <hookdata>
+    <config>
+      <hook_name>(TP) Google Analytics: IP.Board Page Name Corrections</hook_name>
+      <hook_desc>Corrects page names for items that show as the index page</hook_desc>
+      <hook_author>Philip Lawrence</hook_author>
+      <hook_email>philip@misterphilip.com</hook_email>
+      <hook_website>http://tagpla.net</hook_website>
+      <hook_update_check/>
+      <hook_requirements><![CDATA[a:3:{s:21:"required_applications";a:1:{s:18:"TP_GoogleAnalytics";a:3:{s:8:"app_name";s:21:"(TP) Google Analytics";s:11:"min_version";i:0;s:11:"max_version";i:0;}}s:20:"hook_php_version_min";s:0:"";s:20:"hook_php_version_max";s:0:"";}]]></hook_requirements>
+      <hook_version_human>1.0.0</hook_version_human>
+      <hook_version_long>10000</hook_version_long>
+      <hook_extra_data/>
+      <hook_key>tpGoogleAnalytics_boardPageNames</hook_key>
+      <hook_global_caches/>
+    </config>
+  </hookdata>
+  <hookfiles>
+    <file>
+      <hook_file_real>TP_GoogleAnalyticsBoardPageNames.php</hook_file_real>
+      <hook_type>commandHooks</hook_type>
+      <hook_classname>TP_GoogleAnalyticsActionOverloaderTopics</hook_classname>
+      <hook_data><![CDATA[a:8:{s:12:"dataLocation";s:0:"";s:14:"libApplication";s:0:"";s:15:"classToOverload";s:23:"public_forums_post_post";s:9:"skinGroup";N;s:12:"skinFunction";N;s:4:"type";N;s:2:"id";N;s:8:"position";N;}]]></hook_data>
+      <hooks_source><![CDATA[<?php
+
+/**
+ * (TP) Google Analytics: IP.Board Page Name Corrections
+ * Allow us see better on what the page names are instead of rolling them up into index.php
+ */
+
+/**
+ *  Action Overloader
+ *   Fires a GA event upon post reply
+ */
+class TP_GoogleAnalyticsActionOverloaderTopics extends (~extends~)
+{    
+    
+    public function showForm( $type )
+    {
+    
+        // Verify our class is loaded
+        if ( ipsRegistry::isClassLoaded( 'TP_GoogleAnalytics' ) )
+        {
+            // Figure out what type of form we have
+            switch( $type ) 
+            {
+                case 'reply':
+                    $action = 'new-reply';
+                    $topic = $this->_postClass->getTopicData();
+                    $fullURL = ipsRegistry::getClass('output')->buildSEOUrl( 'showtopic=' . $topic['tid'], 'public', $topic['title_seo'], 'showtopic');
+                break;
+                case 'new':
+                    $action = 'new-topic';
+                    $forum = $this->_postClass->getForumData();
+                    $fullURL = ipsRegistry::getClass('output')->buildSEOUrl( 'showforum=' . $forum['id'], 'public', $forum['name_seo'], 'showforum');
+                break;
+                case 'edit':
+                    $action = 'edit';
+                    $topic = $this->_postClass->getTopicData();
+                    $fullURL = ipsRegistry::getClass('output')->buildSEOUrl( 'showtopic=' . $topic['tid'], 'public', $topic['title_seo'], 'showtopic');
+                break;
+                default:
+                    $fullURL = $action = '';
+                break;
+                
+            }
+            
+            $pageName = $this->registry->TP_GoogleAnalytics->cleanPageName($fullURL, $action);
+            
+            if( $type == 'edit' )
+            {
+                $pageName .= '?p=' . $this->_postClass->getPostID();
+            }
+            
+            $this->registry->TP_GoogleAnalytics->_trackPageview($pageName);
+        }
+        
+        parent::showForm( $type );
+    }
+    
+}]]></hooks_source>
+    </file>
+  </hookfiles>
+  <hookextras_settings/>
+  <hookextras_language/>
+  <hookextras_modules/>
+  <hookextras_help/>
+  <hookextras_templates/>
+  <hookextras_css/>
+  <hookextras_replacements/>
+  <hookextras_tasks/>
+  <hookextras_database_create/>
+  <hookextras_database_alter/>
+  <hookextras_database_update/>
+  <hookextras_database_insert/>
+</hookexport>

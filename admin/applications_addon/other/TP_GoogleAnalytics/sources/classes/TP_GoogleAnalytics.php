@@ -132,10 +132,6 @@ class TP_GoogleAnalytics_core
 		$this->memberData =& $this->registry->member()->fetchMemberData();
 		$this->cache      =  $this->registry->cache();
 		$this->caches     =& $this->registry->cache()->fetchCaches();        
-        
-        // Check to see if we have space in the session for us already        
-        if( ! isset( $_SESSION['tpga'] ) )
-            $_SESSION['tpga'] = array();
                 
         // Initialize this bad boy
         $this->_init = $this->_init();
@@ -146,6 +142,10 @@ class TP_GoogleAnalytics_core
         // Verify we're not initialized already
         if( $this->_init )
             return true;
+        
+        // Check to see if we have space in the session for us already        
+        if( ! isset( $_SESSION['tpga'] ) )
+            $_SESSION['tpga'] = array();
         
         // Prefix?
         if( $this->settings[self::P . 'prefix'] )
@@ -171,7 +171,7 @@ class TP_GoogleAnalytics_core
             '_setVisitorCookieTimeout',
             '_setCookiePath',
         );
-                
+        
         // Loop through all the GA options we allow
         foreach( $allowedOptions as $option )
         {
@@ -238,7 +238,7 @@ class TP_GoogleAnalytics_core
      * @param array $data
      * @private
      */
-    public function _setDeferred( $priority, $data )
+    protected function _setDeferred( $priority, $data )
     {
         $_SESSION['tpga']['defer'][(int) $priority][] = $data;
     }   
@@ -259,17 +259,25 @@ class TP_GoogleAnalytics_core
                 $this->_setDeferred( $priority, $data );
             }
         }
-        $this->_data = array();
+        $this->_clearData();
     }  
      
     /**
-     * _clearDeferred
+     * clearDeferred
      * Clears any deferred elements
      */
     public function clearDeferred( )
     {
-        self::debug('clearing deferred items');
         $_SESSION['tpga']['defer'] = array();
+    }
+    
+    /**
+     * _clearData
+     * Clears any data saved
+     */
+    protected function _clearData( )
+    {
+        $this->data = array( );
     }
     
     /**
@@ -448,9 +456,33 @@ EOJS;
         
         // Show that we've rendered
         $this->rendered = true;
-        $this->_data = array( );
+        $this->_clearData();
         
         return $js;
+    }
+    
+    /**
+     * cleanPageName
+     * Cleans up the URL passed in GA based off of an action
+     */
+    public function cleanPageName($fullURL, $action)
+    {
+        // Check to see if we have the domain in the URL (likely)
+        if(strpos($fullURL, $this->settings['board_url']) === 0)
+        {
+            // Remove it
+            $fullURL = substr( $fullURL, strlen( $this->settings['board_url'] ) );
+        }
+        
+        // Do we have a trailing slash already?
+        if(substr($fullURL, -1, 1) !== '/')
+        {
+            // Not yet, add it
+            $fullURL = $fullURL . '/';
+        }
+        
+        // Append the action and return the url
+        return ( $fullURL . $action );
     }
     
     /**

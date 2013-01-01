@@ -4,4 +4,8 @@
         <file>TP_GoogleAnalyticsOutput.xml</file>
         <enabled>1</enabled>
     </hook>
+    <hook>
+        <file>TP_GoogleAnalyticsActionOverloaderTopics.xml</file>
+        <enabled>1</enabled>
+    </hook>
 </hooks>
